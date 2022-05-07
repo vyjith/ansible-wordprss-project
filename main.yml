@@ -48,3 +48,32 @@
         state: directory
         owner: "apache"
         group: "apache"
+
+
+    # Mysql section addding
+
+    - name: "Set mysql root password"
+      ignore_errors: yes
+      mysql_user:
+        login_host: 'localhost'
+        login_user: 'root'
+        login_password: ''
+        name: 'root'
+        password: '{{ mysql_root_password }}'
+        state: present
+
+    - name: "Creating database for wordpress"
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: "Create mysql user for wordpress"
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_password }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
